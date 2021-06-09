@@ -2,6 +2,8 @@
 ARG fedora_version=33
 FROM fedora:${fedora_version} as build-env
 
+COPY . /tmp/srt-game-server
+
 RUN sudo dnf update --assumeyes --verbose && dnf install --assumeyes --verbose \
   Box2D.x86_64 \
   Box2D-devel.x86_64 \
@@ -23,15 +25,14 @@ RUN sudo dnf update --assumeyes --verbose && dnf install --assumeyes --verbose \
 
 #RUN mkdir /tmp/srt-game-server; sudo cp -R /workspace/source /tmp/srt-game-server/
 
-#WORKDIR /tmp/srt-game-server/src/Proto
-#RUN for i in `ls -lC1 *.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
-RUN for i in `ls -lC1 src/Proto/*.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
+WORKDIR /tmp/srt-game-server/src/Proto
+RUN for i in `ls -lC1 *.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
 WORKDIR /tmp/build
 
 RUN echo `pwd`; \
 #  ls -lR /tmp/srt-game-server; \
   echo "Running cmake /tmp/srt-game-server\n"; \
-  cmake /tmp/build/inputs
+  cmake /tmp/srt-game-server
 RUN echo "Running cmake --build .\n"; \
   cmake --build . --parallel -j $(($(grep -c ^processor /proc/cpuinfo)+1))
 
