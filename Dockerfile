@@ -23,14 +23,15 @@ RUN sudo dnf update --assumeyes --verbose && dnf install --assumeyes --verbose \
 
 #RUN mkdir /tmp/srt-game-server; sudo cp -R /workspace/source /tmp/srt-game-server/
 
-WORKDIR /tmp/srt-game-server/src/Proto
-RUN for i in `ls -lC1 *.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
+#WORKDIR /tmp/srt-game-server/src/Proto
+#RUN for i in `ls -lC1 *.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
+RUN for i in `ls -lC1 src/Proto/*.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
 WORKDIR /tmp/build
 
 RUN echo `pwd`; \
-  ls -lR /tmp/srt-game-server; \
+#  ls -lR /tmp/srt-game-server; \
   echo "Running cmake /tmp/srt-game-server\n"; \
-  cmake /tmp/srt-game-server
+  cmake /tmp/build/inputs
 RUN echo "Running cmake --build .\n"; \
   cmake --build . --parallel -j $(($(grep -c ^processor /proc/cpuinfo)+1))
 
