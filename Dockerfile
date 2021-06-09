@@ -21,7 +21,7 @@ RUN sudo dnf update --assumeyes --verbose && dnf install --assumeyes --verbose \
   && dnf clean all \
   && rm -rf /var/cache/yum
 
-RUN mkdir /tmp/srt-game-server; cp -R /workspace/source /tmp/srt-game-server/
+RUN mkdir /tmp/srt-game-server; sudo cp -R /workspace/source /tmp/srt-game-server/
 
 WORKDIR /tmp/srt-game-server/src/Proto
 RUN for i in `ls -lC1 *.proto`; do `echo protoc $i --cpp_out=.`; done; mkdir /tmp/build
